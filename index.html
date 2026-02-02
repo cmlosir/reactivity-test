@@ -31,20 +31,21 @@
             box-sizing: border-box; 
         }
         
-        h1 { font-size: 1.5rem; color: var(--primary); text-align: center; margin-bottom: 20px; }
+        h1 { font-size: 1.4rem; color: var(--primary); text-align: center; margin: 10px 0 20px 0; }
 
         .lang-switch { display: flex; justify-content: flex-end; width: 100%; margin-bottom: 10px; }
 
-        /* 實驗台核心優化：手機上允許水平滾動或縮小 */
+        /* 實驗台：手機滑動優化 */
         .lab-bench { 
             display: flex; 
             justify-content: space-around; 
             align-items: flex-end; 
             height: 320px; 
-            margin: 20px 0; 
+            margin: 10px 0; 
             border-bottom: 6px solid #7f8c8d; 
-            overflow-x: auto; /* 手機上可滑動 */
+            overflow-x: auto; 
             padding-bottom: 10px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .tube-unit { 
@@ -52,50 +53,81 @@
             flex-direction: column; 
             align-items: center; 
             position: relative; 
-            min-width: 100px; /* 確保手機上試管不會縮得太窄 */
+            min-width: 110px; 
             margin: 0 5px;
         }
 
-        /* 試管元件縮小一點以適應手機 */
-        .test-tube { width: 50px; height: 160px; border: 3px solid #7f8c8d; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; position: relative; background: rgba(255,255,255,0.4); }
-        .liquid { position: absolute; bottom: 0; width: 100%; height: 45%; background: rgba(52, 152, 219, 0.2); transition: 0.5s; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
-        .acid { background: rgba(155, 89, 182, 0.2); }
+        /* 試管元件 */
+        .test-tube { 
+            width: 60px; 
+            height: 180px; 
+            border: 3px solid #7f8c8d; 
+            border-bottom-left-radius: 30px; 
+            border-bottom-right-radius: 30px; 
+            position: relative; 
+            background: rgba(255,255,255,0.4); 
+            z-index: 1;
+        }
+        .liquid { 
+            position: absolute; 
+            bottom: 0; 
+            width: 100%; 
+            height: 45%; 
+            background: rgba(52, 152, 219, 0.2); 
+            transition: 0.5s; 
+            border-bottom-left-radius: 25px; 
+            border-bottom-right-radius: 25px;
+            z-index: 2;
+        }
+        .acid { background: rgba(155, 89, 182, 0.25); }
         
-        .thermometer { width: 10px; height: 120px; background: #ddd; border-radius: 5px; position: relative; border: 1.5px solid #95a5a6; margin-right: 8px; }
-        .mercury { width: 100%; background: var(--accent); position: absolute; bottom: 0; height: 25%; transition: height 1.5s; border-radius: 5px; }
-        .temp-val { font-size: 12px; position: absolute; top: -20px; width: 40px; text-align: center; font-weight: bold; }
+        /* 核心修正：金屬塊定位 */
+        .metal { 
+            width: 20px; 
+            height: 15px; 
+            background: #7f8c8d; 
+            position: absolute; 
+            bottom: 5px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            display: none; 
+            z-index: 5; /* 確保在液體上方 */
+            box-shadow: inset -2px -2px 4px rgba(0,0,0,0.3);
+        }
 
-        .splint { position: absolute; top: -20px; right: -50px; width: 60px; height: 4px; background: #8B4513; transform: rotate(-30deg); display: none; z-index: 10; }
+        .bubbles { position: absolute; bottom: 5px; width: 100%; height: 140px; display: none; z-index: 3; pointer-events: none; }
+        
+        .thermometer { width: 10px; height: 130px; background: #ddd; border-radius: 5px; position: relative; border: 1.5px solid #95a5a6; margin-right: 8px; }
+        .mercury { width: 100%; background: var(--accent); position: absolute; bottom: 0; height: 25%; transition: height 1.5s; border-radius: 5px; }
+        .temp-val { font-size: 11px; position: absolute; top: -18px; width: 40px; text-align: center; font-weight: bold; }
+
+        .splint { position: absolute; top: -15px; right: -40px; width: 50px; height: 4px; background: #8B4513; transform: rotate(-30deg); display: none; z-index: 10; }
         .flame { position: absolute; left: -8px; top: -8px; width: 12px; height: 12px; background: #ff9d00; border-radius: 50% 50% 20% 50%; transform: rotate(-45deg); box-shadow: 0 0 5px red; }
         
-        /* 紀錄表手機化：允許橫向捲動 */
         .notebook { margin-top: 20px; overflow-x: auto; background: #fffde7; padding: 10px; border-radius: 10px; border: 1px solid #ffe082; }
-        table { width: 100%; min-width: 400px; border-collapse: collapse; font-size: 14px; }
-        th, td { border: 1px solid #d7ccc8; padding: 8px; text-align: center; }
+        table { width: 100%; min-width: 450px; border-collapse: collapse; font-size: 13px; }
+        th, td { border: 1px solid #d7ccc8; padding: 10px; text-align: center; }
 
-        /* 挑戰區手機化：由橫變直 */
         .challenge-zone { margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 15px; }
-        .selection-grid { display: flex; flex-direction: column; gap: 15px; } /* 手機版改為垂直 */
-        .box { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: left; }
+        .selection-grid { display: flex; flex-direction: column; gap: 12px; }
+        .box { background: white; padding: 12px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: left; }
 
         .btn { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; -webkit-tap-highlight-color: transparent; }
         .btn-add { background: var(--primary); color: white; width: 100%; margin-top: 8px; font-size: 14px; }
-        .btn-test { background: #e67e22; color: white; width: 100%; margin-top: 15px; font-size: 1.1em; padding: 15px; }
-        .btn-submit { background: #2e7d32; color: white; margin-top: 20px; width: 100%; padding: 15px; }
+        .btn-test { background: #e67e22; color: white; width: 100%; margin: 15px 0; font-size: 1rem; padding: 15px; }
+        .btn-submit { background: #2e7d32; color: white; margin-top: 15px; width: 100%; padding: 15px; font-size: 1rem; }
 
-        #status { margin-top: 15px; padding: 10px; font-size: 14px; font-weight: bold; text-align: center; border-radius: 8px; min-height: 40px; display: flex; align-items: center; justify-content: center; }
+        #status { margin-top: 15px; padding: 12px; font-size: 14px; font-weight: bold; text-align: center; border-radius: 8px; min-height: 40px; }
         .status-wrong { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
         .status-correct { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
 
-        /* 針對較大螢幕（如 iPad, PC）恢復橫向佈局 */
         @media (min-width: 600px) {
-            h1 { font-size: 2rem; }
+            h1 { font-size: 1.8rem; }
             .selection-grid { flex-direction: row; }
             .box { flex: 1; }
-            .btn-submit { width: auto; padding: 15px 60px; }
-            .tube-unit { min-width: 150px; }
-            .test-tube { width: 65px; height: 200px; }
-            .thermometer { width: 12px; height: 150px; }
+            .btn-submit { width: auto; padding: 15px 60px; align-self: center; }
+            .tube-unit { min-width: 140px; }
+            .test-tube { width: 65px; height: 190px; }
         }
     </style>
 </head>
@@ -103,18 +135,18 @@
 
 <div class="container">
     <div class="lang-switch">
-        <button class="btn" onclick="toggleLang()" style="background:#fff; border:1px solid #ccc; font-size: 12px;">English / 中文</button>
+        <button class="btn" onclick="toggleLang()" style="background:#fff; border:1px solid #ccc; font-size: 11px; padding:5px 10px;">English / 中文</button>
     </div>
 
     <h1 id="txt-title">Metals Reactivity Challenge</h1>
 
-    <div style="text-align: center; margin-bottom: 15px;">
+    <div style="text-align: center; margin-bottom: 10px;">
         <strong id="txt-select-reagent" style="font-size: 14px;">Select Reagent:</strong><br>
-        <select id="reagent" onchange="resetLab(false)" style="padding: 8px; margin-top: 5px; width: 80%; max-width: 300px;">
+        <select id="reagent" onchange="resetLab(false)" style="padding: 10px; margin-top: 8px; width: 90%; max-width: 300px; border-radius: 8px;">
             <option value="water" id="opt-water">Distilled Water (H2O)</option>
             <option value="acid" id="opt-acid">Dilute HCl</option>
         </select><br>
-        <button class="btn" style="background:#bdc3c7; margin-top:10px; font-size: 12px;" onclick="resetLab(true)" id="btn-restart">🔄 Restart (Randomize)</button>
+        <button class="btn" style="background:#bdc3c7; margin-top:10px; font-size: 12px; padding:8px 15px;" onclick="resetLab(true)" id="btn-restart">🔄 Restart (Randomize)</button>
     </div>
 
     <div class="lab-bench">
@@ -122,18 +154,18 @@
             ['A', 'B', 'C'].forEach(id => {
                 document.write(`
                     <div class="tube-unit">
-                        <div id="pop${id}" style="position:absolute; top:-40px; font-size:12px; font-weight:bold; color:orange; display:none;">POP!</div>
+                        <div id="pop${id}" style="position:absolute; top:-40px; font-size:12px; font-weight:bold; color:orange; display:none; z-index:20;">POP!</div>
                         <div id="splint${id}" class="splint"><div class="flame"></div></div>
                         <div class="temp-val" id="temp${id}">25°C</div>
                         <div style="display: flex; align-items: flex-end;">
                             <div class="thermometer"><div class="mercury" id="merc${id}"></div></div>
-                            <div class="test-tube">
+                            <div class="test-tube" id="tubeContainer${id}">
                                 <div class="liquid" id="liq${id}"></div>
-                                <div class="metal" id="m${id}" style="width:18px; height:18px; left:16px;"></div>
-                                <div class="bubbles" id="b${id}" style="position:absolute; bottom:10px; width:100%; height:100px; display:none;"></div>
+                                <div class="metal" id="m${id}"></div>
+                                <div class="bubbles" id="b${id}"></div>
                             </div>
                         </div>
-                        <strong style="margin-top:10px; font-size:12px;">Unknown ${id}</strong>
+                        <strong style="margin-top:10px; font-size:13px;">Unknown ${id}</strong>
                         <button class="btn btn-add" onclick="addMetal('${id}')" id="btn-add-${id}">Add</button>
                     </div>
                 `);
@@ -172,22 +204,24 @@
     </div>
 
     <div class="challenge-zone">
-        <h3 id="txt-challenge" style="font-size: 1.1rem; margin-top:0;">🏆 Final Conclusion</h3>
+        <h3 id="txt-challenge" style="font-size: 1.1rem; margin:0 0 10px 0;">🏆 Final Conclusion</h3>
         <div class="selection-grid">
             <div class="box">
-                <p id="txt-order" style="margin-top:0; font-weight:bold;">Reactivity Order (1=Highest):</p>
+                <p id="txt-order" style="margin:0 0 8px 0; font-weight:bold; font-size:14px;">Reactivity Order (1=Highest):</p>
                 1: <select id="rank1" onchange="clearStatus()"><option>?</option><option>A</option><option>B</option><option>C</option></select>
                 2: <select id="rank2" onchange="clearStatus()"><option>?</option><option>A</option><option>B</option><option>C</option></select>
                 3: <select id="rank3" onchange="clearStatus()"><option>?</option><option>A</option><option>B</option><option>C</option></select>
             </div>
             <div class="box">
-                <p id="txt-identity" style="margin-top:0; font-weight:bold;">Identify the Metals:</p>
+                <p id="txt-identity" style="margin:0 0 8px 0; font-weight:bold; font-size:14px;">Identify the Metals:</p>
                 A: <select id="idA" onchange="clearStatus()"><option>?</option><option value="Calcium">Calcium</option><option value="Magnesium">Magnesium</option><option value="Copper">Copper</option></select><br>
                 B: <select id="idB" onchange="clearStatus()"><option>?</option><option value="Calcium">Calcium</option><option value="Magnesium">Magnesium</option><option value="Copper">Copper</option></select><br>
                 C: <select id="idC" onchange="clearStatus()"><option>?</option><option value="Calcium">Calcium</option><option value="Magnesium">Magnesium</option><option value="Copper">Copper</option></select>
             </div>
         </div>
-        <button class="btn btn-submit" onclick="checkAnswers()" id="btn-submit">Submit Result</button>
+        <div style="display:flex; justify-content:center;">
+            <button class="btn btn-submit" onclick="checkAnswers()" id="btn-submit">Submit Result</button>
+        </div>
     </div>
     
     <div id="status"></div>
@@ -275,11 +309,13 @@
     function addMetal(id) {
         if (activeMetals[id]) return;
         activeMetals[id] = true;
-        const reagent = document.getElementById('reagent').value;
         const identity = metalMapping[id];
-        const mDot = document.getElementById('m' + id);
-        mDot.style.display = 'block';
-        mDot.style.background = identity === "Copper" ? "#d35400" : "#7f8c8d";
+        const reagent = document.getElementById('reagent').value;
+        const mObj = document.getElementById('m' + id);
+        
+        mObj.style.display = 'block';
+        // 銅顯示紅棕色，其餘灰色
+        mObj.style.background = (identity === "Copper") ? "#d35400" : "#7f8c8d";
         
         let config = { temp: 25, bubbles: 0 };
         if (reagent === 'water') {
@@ -296,7 +332,7 @@
             for (let i = 0; i < config.bubbles / 2; i++) {
                 let div = document.createElement('div');
                 div.className = 'bubble';
-                div.style = `position:absolute; background:white; border-radius:50%; opacity:0.6; width:${Math.random()*5+2}px; height:${Math.random()*5+2}px; left:${Math.random()*40}px; animation: rise ${Math.random()*1+0.5}s linear infinite;`;
+                div.style = `position:absolute; background:white; border-radius:50%; opacity:0.6; width:${Math.random()*5+2}px; height:${Math.random()*5+2}px; left:${Math.random()*45}px; animation: rise ${Math.random()*1+0.5}s linear infinite;`;
                 bDiv.appendChild(div);
             }
         }
@@ -319,7 +355,7 @@
                     setTimeout(() => document.getElementById('pop' + id).style.display = 'none', 800);
                 }
                 await new Promise(r => setTimeout(r, 500));
-                splint.style.right = '-50px';
+                splint.style.right = '-40px';
                 setTimeout(() => splint.style.display = 'none', 500);
             }
         }
@@ -333,6 +369,7 @@
         const ids = [document.getElementById('idA').value, document.getElementById('idB').value, document.getElementById('idC').value];
         const reactivity = { "Calcium": 3, "Magnesium": 2, "Copper": 1 };
         const sorted = ['A', 'B', 'C'].sort((x, y) => reactivity[metalMapping[y]] - reactivity[metalMapping[x]]);
+        
         if (r[0]===sorted[0] && r[1]===sorted[1] && r[2]===sorted[2] && ids[0]===metalMapping.A && ids[1]===metalMapping.B && ids[2]===metalMapping.C) {
             s.innerText = i18n[lang].correct; s.className = "status-correct";
         } else {
